@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 
 use App\Http\Requests\InformationRequest;
 
+use App\Models\Information;
+
 class InformationController extends Controller
 {
   public function index(InformationRequest $request)
@@ -77,19 +79,17 @@ class InformationController extends Controller
     return $data;
   }
 
-  public function update(Request $request, $id)
+  public function update(InformationRequest $request, $id)
   {
-    $data = DB::table("information")->where("ID", $id);
+    $data = Information::find($id);
 
-    if ($data->doesntExist()) {
+    if (empty($data)) {
       return response()->doesntExist();
     }
 
-    $information = $data->first();
-
-    $id_foreign = $information->tablet_id;
-    $mac_address = $information->mac_address;
-    $date_harvest = $information->current_date_in;
+    // $id_foreign = $data->tablet_id;
+    // $mac_address = $data->mac_address;
+    // $date_harvest = $data->current_date_in;
 
     $data->update([
       "farm" => $request["farm"],
@@ -112,8 +112,6 @@ class InformationController extends Controller
         ]);
     }
 
-    // log this activity here.
-
-    return response()->updated("Information", $data->first());
+    return response()->updated("Information", $data);
   }
 }

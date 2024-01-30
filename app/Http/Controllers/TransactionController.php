@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\DropdownRequest;
 use App\Http\Requests\TransactionRequest;
 
+use App\Models\Transaction;
+
 class TransactionController extends Controller
 {
   public function index(TransactionRequest $request)
@@ -86,9 +88,9 @@ class TransactionController extends Controller
 
   public function update(TransactionRequest $request, $id)
   {
-    $data = DB::table("transaction")->where("id", $id);
+    $data = Transaction::find($id);
 
-    if ($data->doesntExist()) {
+    if (empty($data)) {
       return response()->doesntExist();
     }
 
@@ -97,50 +99,18 @@ class TransactionController extends Controller
       "weight" => $request["weight"],
     ]);
 
-    // log this activity here.
-
-    return response()->updated("Transaction", $data->first());
+    return response()->updated("Transaction", $data);
   }
 
   public function destroy($id)
   {
-    $data = DB::table("transaction")->where("id", $id);
+    $data = Transaction::find($id);
 
-    if ($data->doesntExist()) {
+    if (empty($data)) {
       return response()->doesntExist();
     }
 
-    $transaction = $data->first();
-
-    $duplicate = DB::table("transaction")
-      ->where("id_foreign", $transaction->id_foreign)
-      ->where("mac_address", $transaction->mac_address)
-      ->where("transaction_no", $transaction->transaction_no)
-      ->where("date_harvest", $transaction->date_harvest)
-      ->where("heads", $transaction->heads)
-      ->where("weight", $transaction->weight)
-      ->get()
-      ->count();
-
-    if ($duplicate <= 1) {
-      return response()->doesntDuplicate();
-    }
-
-    DB::table("softdeleted")->insert([
-      "id" => $transaction->id,
-      "date_harvest" => $transaction->date_harvest,
-      "heads" => $transaction->heads,
-      "weight" => $transaction->weight,
-      "current_date_in" => $transaction->current_date_in,
-      "current_time_in" => $transaction->current_time_in,
-      "id_foreign" => $transaction->id_foreign,
-      "mac_address" => $transaction->mac_address,
-      "transaction_no" => $transaction->transaction_no,
-      "created_at" => $transaction->created_at,
-    ]);
-    DB::table("transaction")->delete($transaction->id);
-
-    // log this activity here.
+    $data->delete();
 
     return response()->deleted("Transaction", []);
   }
