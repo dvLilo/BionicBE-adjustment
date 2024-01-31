@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\InformationController;
+use App\Http\Controllers\ActivityController;
+
+use Spatie\Activitylog\Models\Activity;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,10 +21,6 @@ use App\Http\Controllers\InformationController;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
 Route::post("login", [UserController::class, "login"]);
 
 Route::group(["middleware" => "auth:sanctum"], function () {
@@ -29,6 +28,8 @@ Route::group(["middleware" => "auth:sanctum"], function () {
 
   Route::resource("transactions", TransactionController::class);
   Route::resource("informations", InformationController::class);
+
+  Route::resource("activities", ActivityController::class);
 });
 
 Route::get("dropdown", [TransactionController::class, "dropdown"]);

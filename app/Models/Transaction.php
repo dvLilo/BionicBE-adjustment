@@ -24,6 +24,7 @@ class Transaction extends Model
       ->setDescriptionForEvent(function ($event) {
         return "Transaction has been {$event}";
       })
+      ->useLogName("transaction")
       ->logOnly(["*"]);
   }
 }

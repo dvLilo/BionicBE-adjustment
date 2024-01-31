@@ -87,9 +87,9 @@ class InformationController extends Controller
       return response()->doesntExist();
     }
 
-    // $id_foreign = $data->tablet_id;
-    // $mac_address = $data->mac_address;
-    // $date_harvest = $data->current_date_in;
+    $id_foreign = $data->tablet_id;
+    $mac_address = $data->mac_address;
+    $date_harvest = $data->current_date_in;
 
     $data->update([
       "farm" => $request["farm"],

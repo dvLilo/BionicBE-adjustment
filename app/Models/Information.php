@@ -26,6 +26,7 @@ class Information extends Model
       ->setDescriptionForEvent(function ($event) {
         return "Information has been {$event}";
       })
+      ->useLogName("information")
       ->logOnly(["*"]);
   }
 }
