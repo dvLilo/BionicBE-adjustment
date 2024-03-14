@@ -94,10 +94,57 @@ class TransactionController extends Controller
       return response()->doesntExist();
     }
 
+    $old = [
+      "id" => $data->id,
+      "transaction_no" => $data->transaction_no,
+      "date_harvest" => $data->date_harvest,
+      "heads" => $data->heads,
+      "weight" => $data->weight,
+      "allowance" => $data->heads / $data->weight,
+      "category" => $data->information->category,
+      "farm" => $data->information->farm,
+      "building" => $data->information->building,
+      "buyer" => $data->information->buyer,
+      "plate_no" => $data->information->plate_no,
+      "leadman" => $data->information->leadman,
+      "checker" => $data->information->checker,
+      "series_no" => "Tab" . $data->user->ID . "-" . $data->information->series,
+      "current_date_in" => $data->current_date_in,
+      "current_time_in" => $data->current_time_in,
+    ];
+
+    $new = [
+      "id" => $data->id,
+      "transaction_no" => $data->transaction_no,
+      "date_harvest" => $data->date_harvest,
+      "heads" => $request["heads"],
+      "weight" => $request["weight"],
+      "allowance" => $data->heads / $data->weight,
+      "category" => $data->information->category,
+      "farm" => $data->information->farm,
+      "building" => $data->information->building,
+      "buyer" => $data->information->buyer,
+      "plate_no" => $data->information->plate_no,
+      "leadman" => $data->information->leadman,
+      "checker" => $data->information->checker,
+      "series_no" => "Tab" . $data->user->ID . "-" . $data->information->series,
+      "current_date_in" => $data->current_date_in,
+      "current_time_in" => $data->current_time_in,
+    ];
+
     $data->update([
       "heads" => $request["heads"],
       "weight" => $request["weight"],
     ]);
+
+    activity("detailed")
+      ->performedOn($data)
+      ->event("updated")
+      ->withProperties([
+        "old" => $old,
+        "attributes" => $new,
+      ])
+      ->log("Transaction has been updated");
 
     return response()->updated("Transaction", $data);
   }
@@ -110,7 +157,34 @@ class TransactionController extends Controller
       return response()->doesntExist();
     }
 
+    $old = [
+      "id" => $data->id,
+      "transaction_no" => $data->transaction_no,
+      "date_harvest" => $data->date_harvest,
+      "heads" => $data->heads,
+      "weight" => $data->weight,
+      "allowance" => $data->heads / $data->weight,
+      "category" => $data->information->category,
+      "farm" => $data->information->farm,
+      "building" => $data->information->building,
+      "buyer" => $data->information->buyer,
+      "plate_no" => $data->information->plate_no,
+      "leadman" => $data->information->leadman,
+      "checker" => $data->information->checker,
+      "series_no" => "Tab" . $data->user->ID . "-" . $data->information->series,
+      "current_date_in" => $data->current_date_in,
+      "current_time_in" => $data->current_time_in,
+    ];
+
     $data->delete();
+
+    activity("detailed")
+      ->performedOn($data)
+      ->event("deleted")
+      ->withProperties([
+        "old" => $old,
+      ])
+      ->log("Transaction has been deleted");
 
     return response()->deleted("Transaction", []);
   }

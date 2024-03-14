@@ -87,6 +87,36 @@ class InformationController extends Controller
       return response()->doesntExist();
     }
 
+    $old = [
+      "ID" => $data->ID,
+      "current_date_in" => $data->current_date_in,
+      "category" => $data->category,
+      "farm" => $data->farm,
+      "building" => $data->building,
+      "buyer" => $data->buyer,
+      "plate_no" => $data->plate_no,
+      "leadman" => $data->leadman,
+      "checker" => $data->checker,
+      "series" => "Tab" . $data->user->ID . "-" . $data->series,
+      "total_heads" => $data->heads[0]->total,
+      "total_weight" => $data->weight[0]->total,
+    ];
+
+    $new = [
+      "ID" => $data->ID,
+      "current_date_in" => $data->current_date_in,
+      "category" => $request["category"],
+      "farm" => $request["farm"],
+      "building" => $request["building"],
+      "buyer" => $request["buyer"],
+      "plate_no" => $request["plate_no"],
+      "leadman" => $request["leadman"],
+      "checker" => $request["checker"],
+      "series" => "Tab" . $data->user->ID . "-" . $data->series,
+      "total_heads" => $data->heads[0]->total,
+      "total_weight" => $data->weight[0]->total,
+    ];
+
     $id_foreign = $data->tablet_id;
     $mac_address = $data->mac_address;
     $date_harvest = $data->current_date_in;
@@ -101,6 +131,15 @@ class InformationController extends Controller
       "category" => $request["category"],
       "checker" => $request["checker"],
     ]);
+
+    activity("summarized")
+      ->performedOn($data)
+      ->event("updated")
+      ->withProperties([
+        "old" => $old,
+        "attributes" => $new,
+      ])
+      ->log("Information has been updated");
 
     if ($date_harvest != $request->date_harvest) {
       DB::table("transaction")

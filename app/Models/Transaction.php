@@ -5,12 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\Activitylog\LogOptions;
-
 class Transaction extends Model
 {
-  use HasFactory, LogsActivity;
+  use HasFactory;
 
   public $timestamps = false;
 
@@ -18,13 +15,15 @@ class Transaction extends Model
 
   protected $fillable = ["date_harvest", "heads", "weight"];
 
-  public function getActivitylogOptions(): LogOptions
+  public function information()
   {
-    return LogOptions::defaults()
-      ->setDescriptionForEvent(function ($event) {
-        return "Transaction has been {$event}";
-      })
-      ->useLogName("transaction")
-      ->logOnly(["*"]);
+    return $this->hasOne(Information::class, "mac_address", "mac_address")
+      ->where("tablet_id", $this->id_foreign)
+      ->where("current_date_in", $this->date_harvest);
+  }
+
+  public function user()
+  {
+    return $this->hasOne(User::class, "mac_address", "mac_address");
   }
 }

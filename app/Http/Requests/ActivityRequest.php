@@ -16,10 +16,13 @@ class ActivityRequest extends FormRequest
     // Index Validation
     if ($this->isMethod("GET")) {
       return [
-        "page" => ["required"],
+        "page" => ["nullable"],
 
-        "type" => ["nullable", "in:detailed,summarized"],
-        "event" => ["nullable", "in:updated,deleted"],
+        "from" => ["required", "date"],
+        "to" => ["required", "date"],
+
+        "type" => ["required", "in:DETAILED,SUMMARIZED"],
+        "event" => ["nullable", "in:UPDATED,DELETED"],
 
         "name" => ["nullable"],
 
