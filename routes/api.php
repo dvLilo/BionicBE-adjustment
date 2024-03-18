@@ -8,6 +8,8 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\InformationController;
 use App\Http\Controllers\ActivityController;
 
+use App\Http\Controllers\CategoryController;
+
 use Spatie\Activitylog\Models\Activity;
 
 /*
@@ -30,6 +32,8 @@ Route::group(["middleware" => "auth:sanctum"], function () {
   Route::resource("informations", InformationController::class);
 
   Route::resource("activities", ActivityController::class);
+
+  Route::resource("categories", CategoryController::class);
 });
 
 Route::get("dropdown", [TransactionController::class, "dropdown"]);
