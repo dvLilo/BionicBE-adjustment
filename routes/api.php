@@ -12,6 +12,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FarmController;
 use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\BuyerController;
+use App\Http\Controllers\LeadmanController;
 
 use Spatie\Activitylog\Models\Activity;
 
@@ -40,6 +41,7 @@ Route::group(["middleware" => "auth:sanctum"], function () {
   Route::resource("farms", FarmController::class);
   Route::resource("buildings", BuildingController::class);
   Route::resource("buyers", BuyerController::class);
+  Route::resource("leadmen", LeadmanController::class);
 });
 
 Route::get("dropdown", [TransactionController::class, "dropdown"]);
