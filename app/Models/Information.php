@@ -4,39 +4,57 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Information extends Model
 {
-  use HasFactory;
+  use HasFactory, SoftDeletes;
 
-  public $timestamps = false;
+  protected $hidden = ["created_at"];
 
-  protected $table = "information";
+  protected $fillable = [
+    "user_id",
+    "category_id",
+    "farm_id",
+    "building_id",
+    "leadman_id",
+    "leadman_name",
+    "buyer_id",
+    "buyer_name",
+    "plate_id",
+    "plate_name",
+    "type",
+    "series_no",
+    "harvested_at",
+  ];
 
-  protected $primaryKey = "ID";
-
-  protected $fillable = ["category", "farm", "building", "buyer", "plate_no", "leadman", "checker", "current_date_in"];
-
-  public function user()
+  public function category()
   {
-    return $this->hasOne(User::class, "mac_address", "mac_address");
+    return $this->hasOne(Category::class, "id", "category_id");
   }
 
-  public function heads()
+  public function farm()
   {
-    return $this->hasMany(Transaction::class, "mac_address", "mac_address")
-      ->where("id_foreign", $this->tablet_id)
-      ->where("date_harvest", $this->current_date_in)
-      ->select(DB::raw("SUM(transaction.heads) AS total"));
+    return $this->hasOne(Farm::class, "id", "farm_id");
   }
 
-  public function weight()
+  public function building()
   {
-    return $this->hasMany(Transaction::class, "mac_address", "mac_address")
-      ->where("id_foreign", $this->tablet_id)
-      ->where("date_harvest", $this->current_date_in)
-      ->select(DB::raw("SUM(transaction.weight) AS total"));
+    return $this->hasOne(Building::class, "id", "building_id");
+  }
+
+  public function leadman()
+  {
+    return $this->hasOne(Leadman::class, "id", "leadman_id");
+  }
+
+  public function buyer()
+  {
+    return $this->hasOne(Buyer::class, "id", "buyer_id");
+  }
+
+  public function plate()
+  {
+    return $this->hasOne(Plate::class, "id", "plate_id");
   }
 }
