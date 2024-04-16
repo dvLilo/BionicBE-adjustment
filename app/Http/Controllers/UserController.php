@@ -40,11 +40,11 @@ class UserController extends Controller
 
   public function login(LoginRequest $request)
   {
-    $data = User::where("username", $request["username"])->where("password", $request["password"]);
+    $credentials = $request->only("username", "password");
 
-    if ($data->exists()) {
-      $user = $data->get()->first();
-      $user->token = $user->createToken("fisto")->plainTextToken;
+    if (Auth::attempt($credentials)) {
+      $user = User::find(Auth::id());
+      $user->token = $user->createToken("bionic")->plainTextToken;
 
       return response()->login($user);
     }
@@ -52,7 +52,7 @@ class UserController extends Controller
     return response(
       [
         "status" => 401,
-        "message" => "Invalid username or password.",
+        "message" => "Invalid username or password. Please Try again.",
       ],
       401
     );
