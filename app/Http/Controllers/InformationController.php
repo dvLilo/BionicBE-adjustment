@@ -63,7 +63,7 @@ class InformationController extends Controller
         "buyer",
         "plate_no",
 
-        DB::raw("CONCAT('Tab', user_account.ID, '-', information.series) AS series_no"),
+        DB::raw("CONCAT('Tab', COALESCE(user_account.ID, ''), '-', information.series) AS series_no"),
         DB::raw("SUM(transaction.heads) AS total_heads"),
         DB::raw("SUM(transaction.weight) AS total_weight"),
 

@@ -72,7 +72,7 @@ class TransactionController extends Controller
         "plate_no",
         "leadman",
         "checker",
-        DB::raw("CONCAT('Tab', user_account.ID, '-', information.series) AS series_no"),
+        DB::raw("CONCAT('Tab', COALESCE(user_account.ID, ''), '-', information.series) AS series_no"),
 
         "transaction.current_date_in",
         "transaction.current_time_in"
