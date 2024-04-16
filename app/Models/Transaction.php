@@ -4,26 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transaction extends Model
 {
-  use HasFactory;
+  use HasFactory, SoftDeletes;
 
-  public $timestamps = false;
+  protected $hidden = ["created_at"];
 
-  protected $table = "transaction";
-
-  protected $fillable = ["date_harvest", "heads", "weight"];
-
-  public function information()
-  {
-    return $this->hasOne(Information::class, "mac_address", "mac_address")
-      ->where("tablet_id", $this->id_foreign)
-      ->where("current_date_in", $this->date_harvest);
-  }
-
-  public function user()
-  {
-    return $this->hasOne(User::class, "mac_address", "mac_address");
-  }
+  protected $fillable = ["information_id", "batch_no", "heads", "weight"];
 }
